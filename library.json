@@ -1,0 +1,25 @@
+{
+  "name": "klevebrand-drone-gyro-bno085",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": "",
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/LordMax2/klevebrand-drone-gyro-bno085.git"
+  },
+  "authors":
+  [
+    {
+      "name": "Max Klevebrand",
+      "email": "max.klevebrand@gmail.com",
+      "url": "https://klevebrand.se"
+    }
+  ],
+  "license": "MIT",
+  "homepage": "https://klevebrand.se",
+  "dependencies": { 
+  },
+  "frameworks": "*",
+  "platforms": "Arduino"
+}
