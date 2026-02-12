@@ -1,8 +1,8 @@
 {
   "name": "klevebrand-drone-gyro-bno085",
   "version": "1.0.1",
-  "description": "",
-  "keywords": "",
+  "description": "An implementation for klevebrand-all-drone-core gyro for the BNO085 IMU.",
+  "keywords": "klevebrand,gyro,bno085,bno08x,imu",
   "repository":
   {
     "type": "git",
