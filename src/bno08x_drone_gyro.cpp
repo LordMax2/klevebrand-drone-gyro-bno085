@@ -7,7 +7,7 @@ long Bno08xDroneGyro::timestampMilliseconds()
 
 bool Bno08xDroneGyro::setModeEuler()
 {
-  bool result = gyro.enableReport(SH2_ARVR_STABILIZED_RV, 4000);
+  bool result = _gyro.enableReport(SH2_ARVR_STABILIZED_RV, 4000);
 
   if (!result)
   {
@@ -19,7 +19,7 @@ bool Bno08xDroneGyro::setModeEuler()
 
 bool Bno08xDroneGyro::setModeAcro()
 {
-  bool result = gyro.enableReport(SH2_GYROSCOPE_CALIBRATED, 2000);
+  bool result = _gyro.enableReport(SH2_GYROSCOPE_CALIBRATED, 2000);
 
   if (!result)
   {
@@ -32,7 +32,7 @@ bool Bno08xDroneGyro::setModeAcro()
 void Bno08xDroneGyro::setup()
 {
   Serial.println("SETTING UP GYROSCOPE.");
-  if (!gyro.begin_I2C())
+  if (!_gyro.begin_I2C())
   {
     Serial.println("FAILED TO CONNECT TO BNO085...");
 
@@ -49,7 +49,7 @@ void Bno08xDroneGyro::setup()
 
 void Bno08xDroneGyro::reset()
 {
-  gyro.hardwareReset();
+  _gyro.hardwareReset();
 }
 
 float Bno08xDroneGyro::yaw()
@@ -78,7 +78,7 @@ void Bno08xDroneGyro::printYawPitchRoll()
 
 bool Bno08xDroneGyro::reload()
 {
-  if (gyro.getSensorEvent(&_sensor_value))
+  if (_gyro.getSensorEvent(&_sensor_value))
   {
     if (_sensor_value.sensorId == 40)
     {
