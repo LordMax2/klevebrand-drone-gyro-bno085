@@ -1,4 +1,5 @@
 #include "bno08x_drone_gyro.h"
+#include <Wire.h>
 
 long Bno08xDroneGyro::timestampMilliseconds()
 {
@@ -41,6 +42,8 @@ void Bno08xDroneGyro::setup()
       delay(10);
     }
   }
+
+  Wire.setClock(400000);
 
   Serial.println("BNO085 SET UP!");
 
