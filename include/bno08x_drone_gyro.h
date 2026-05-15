@@ -10,16 +10,21 @@
 class Bno08xDroneGyro : public BaseDroneGyro
 {
 public:
-    Bno08xDroneGyro(int reset_pin) : BaseDroneGyro(), _gyro(reset_pin) {};
+    explicit Bno08xDroneGyro(const int reset_pin) : BaseDroneGyro(), _gyro(reset_pin) {}
     void setup() override;
     bool reload() override;
     void reset() override;
     float yaw() override;
     float pitch() override;
     float roll() override;
+    float accelerationX() override;
+    float accelerationY() override;
+    float accelerationZ() override;
     void printYawPitchRoll() override;
+    void printYawPitchRollAndAcceleration();
     bool setModeAcro() override;
     bool setModeEuler() override;
+    bool setModeEulerAndAcceleration();
     long timestampMilliseconds() override;
 
 
@@ -27,8 +32,19 @@ private:
     Adafruit_BNO08x _gyro;
     sh2_SensorValue_t _sensor_value;
     YawPitchRoll_t _yaw_pitch_roll;
-    YawPitchRoll_t quaternionsToYawPitchRoll(sh2_RotationVectorWAcc_t *rotational_vector, bool degrees = false);
-    YawPitchRoll_t quaternionsToYawPitchRoll(float qr, float qi, float qj, float qk, bool degrees = false);
+    sh2_Accelerometer_t _acceleration = {0.0f, 0.0f, 0.0f};
+    enum Mode
+    {
+        MODE_NONE,
+        MODE_ACRO,
+        MODE_EULER,
+        MODE_EULER_AND_ACCELERATION
+    };
+    Mode _mode = MODE_NONE;
+
+    static YawPitchRoll_t quaternionsToYawPitchRoll(const sh2_RotationVectorWAcc_t *rotational_vector, bool degrees = false);
+
+    static YawPitchRoll_t quaternionsToYawPitchRoll(float qr, float qi, float qj, float qk, bool degrees = false);
 };
 
 #endif // BNO08X_DRONE_GYRO_H
