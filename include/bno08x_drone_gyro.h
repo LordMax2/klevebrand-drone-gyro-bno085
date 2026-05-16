@@ -33,6 +33,8 @@ private:
     sh2_SensorValue_t _sensor_value;
     YawPitchRoll_t _yaw_pitch_roll;
     sh2_Accelerometer_t _acceleration = {0.0f, 0.0f, 0.0f};
+    sh2_RotationVectorWAcc_t _rotational_vector = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
+    sh2_Accelerometer_t _rotated_acceleration = {0.0f, 0.0f, 0.0f};
     enum Mode
     {
         MODE_NONE,
@@ -43,8 +45,8 @@ private:
     Mode _mode = MODE_NONE;
 
     static YawPitchRoll_t quaternionsToYawPitchRoll(const sh2_RotationVectorWAcc_t *rotational_vector, bool degrees = false);
-
     static YawPitchRoll_t quaternionsToYawPitchRoll(float qr, float qi, float qj, float qk, bool degrees = false);
+    static void rotateVectorByQuaternion(float& x, float& y, float& z, float r, float i, float j, float k);
 };
 
 #endif // BNO08X_DRONE_GYRO_H

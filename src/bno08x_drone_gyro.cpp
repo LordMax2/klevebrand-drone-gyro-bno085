@@ -79,14 +79,20 @@ float Bno08xDroneGyro::roll() {
 }
 
 float Bno08xDroneGyro::accelerationX() {
+    if (_mode == MODE_EULER_AND_ACCELERATION) return _rotated_acceleration.x;
+
     return _acceleration.x;
 }
 
 float Bno08xDroneGyro::accelerationY() {
+    if (_mode == MODE_EULER_AND_ACCELERATION) return _rotated_acceleration.y;
+
     return _acceleration.y;
 }
 
 float Bno08xDroneGyro::accelerationZ() {
+    if (_mode == MODE_EULER_AND_ACCELERATION) return _rotated_acceleration.z;
+
     return _acceleration.z;
 }
 
@@ -125,6 +131,8 @@ bool Bno08xDroneGyro::reload() {
         }
 
         if (_sensor_value.sensorId == SH2_ARVR_STABILIZED_RV) {
+            _rotational_vector = _sensor_value.un.arvrStabilizedRV;
+
             const YawPitchRoll_t yaw_pitch_roll = quaternionsToYawPitchRoll(&_sensor_value.un.arvrStabilizedRV, true);
 
             _yaw_pitch_roll.yaw = yaw_pitch_roll.yaw;
@@ -167,15 +175,40 @@ bool Bno08xDroneGyro::reload() {
         }
     }
 
+    if (needs_acceleration && updated) {
+        _rotated_acceleration.x = _acceleration.x;
+        _rotated_acceleration.y = _acceleration.y;
+        _rotated_acceleration.z = _acceleration.z;
+
+        rotateVectorByQuaternion(
+            _rotated_acceleration.x, _rotated_acceleration.y, _rotated_acceleration.z,
+            _rotational_vector.real, _rotational_vector.i, _rotational_vector.j, _rotational_vector.k
+        );
+
+        _rotated_acceleration.z -= 9.80665f;
+    }
+
     return updated;
 }
 
-YawPitchRoll_t Bno08xDroneGyro::quaternionsToYawPitchRoll(const sh2_RotationVectorWAcc_t *rotational_vector, bool to_degrees) {
+void Bno08xDroneGyro::rotateVectorByQuaternion(float& x, float& y, float& z, const float r, const float i, const float j, const float k) {
+    const float tx = 2.0f * (j * z - k * y);
+    const float ty = 2.0f * (k * x - i * z);
+    const float tz = 2.0f * (i * y - j * x);
+
+    x += r * tx + (j * tz - k * ty);
+    y += r * ty + (k * tx - i * tz);
+    z += r * tz + (i * ty - j * tx);
+}
+
+YawPitchRoll_t Bno08xDroneGyro::quaternionsToYawPitchRoll(const sh2_RotationVectorWAcc_t *rotational_vector,
+                                                          bool to_degrees) {
     return quaternionsToYawPitchRoll(rotational_vector->real, rotational_vector->i, rotational_vector->j,
                                      rotational_vector->k, to_degrees);
 }
 
-YawPitchRoll_t Bno08xDroneGyro::quaternionsToYawPitchRoll(const float qr, const float qi, const float qj, const float qk, const bool to_degrees) {
+YawPitchRoll_t Bno08xDroneGyro::quaternionsToYawPitchRoll(const float qr, const float qi, const float qj,
+                                                          const float qk, const bool to_degrees) {
     YawPitchRoll_t yaw_pitch_roll;
 
     const float sqr = sq(qr);
