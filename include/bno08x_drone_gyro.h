@@ -1,32 +1,31 @@
-#ifndef BNO08X_DRONE_GYRO_H
-#define BNO08X_DRONE_GYRO_H
+#pragma once
 
 #include "Arduino.h"
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO08x.h>
-#include "base_drone_gyro.h"
 #include "yaw_pitch_roll.h"
+#include "concept_drone_gyro.h"
 
-class Bno08xDroneGyro : public BaseDroneGyro
+class Bno08xDroneGyro
 {
 public:
-    explicit Bno08xDroneGyro(const int reset_pin) : BaseDroneGyro(), _gyro(reset_pin) {}
-    void setup() override;
-    bool reload() override;
-    void reset() override;
-    float yaw() override;
-    float pitch() override;
-    float roll() override;
-    float accelerationX() override;
-    float accelerationY() override;
-    float accelerationZ() override;
-    void printYawPitchRoll() override;
-    void printYawPitchRollAndAcceleration();
-    bool setModeAcro() override;
-    bool setModeEuler() override;
-    bool setModeEulerAndAcceleration();
-    long timestampMilliseconds() override;
+    explicit Bno08xDroneGyro(const int reset_pin) : _gyro(reset_pin) {}
 
+    void setup();
+    bool reload();
+    void reset();
+    float yaw();
+    float pitch();
+    float roll();
+    float accelerationX();
+    float accelerationY();
+    float accelerationZ();
+    void printYawPitchRoll();
+    void printYawPitchRollAndAcceleration();
+    bool setModeAcro();
+    bool setModeEuler();
+    bool setModeEulerAndAcceleration();
+    unsigned long timestampMilliseconds();
 
 private:
     Adafruit_BNO08x _gyro;
@@ -49,4 +48,4 @@ private:
     static void rotateVectorByQuaternion(float& x, float& y, float& z, float r, float i, float j, float k);
 };
 
-#endif // BNO08X_DRONE_GYRO_H
+static_assert(DroneGyroConcept<Bno08xDroneGyro>, "Bno08xDroneGyro does not meet DroneGyroConcept");

@@ -1,7 +1,7 @@
 #include "bno08x_drone_gyro.h"
 #include <Wire.h>
 
-long Bno08xDroneGyro::timestampMilliseconds() {
+unsigned long Bno08xDroneGyro::timestampMilliseconds() {
     return _yaw_pitch_roll.timestamp_milliseconds;
 }
 
